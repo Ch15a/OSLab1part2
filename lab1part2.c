@@ -18,7 +18,7 @@ int wordCount(char* msg, int bufLen) {
 }
 
 int main() {
-    mqd_t msgq = mq_open("/msgq", O_RDWR | O_CREAT);
+    mqd_t msgq = mq_open("/q", O_RDWR | O_CREAT);
     struct mq_attr mqattr;
     if (mq_getattr(msgq, &mqattr) == -1) {
         exit(1);
@@ -31,11 +31,11 @@ int main() {
         int numRead;
         char* rBuffer = malloc(mqattr.mq_msgsize);
         numRead = mq_receive(msgq, rBuffer, mqattr.mq_msgsize, NULL);
-        printf("Number of words: %d\n", wordCount(rBuffer, numRead));
+        printf("%d\n", wordCount(rBuffer, numRead));
         fflush(stdout);
         free(rBuffer);
         mq_close(msgq);
-        mq_unlink("/msgq");
+        mq_unlink("/q");
         exit(0);
     }
     else {
@@ -65,7 +65,7 @@ int main() {
         } while (ch != EOF);
         fclose(file);
         mq_close(msgq);
-        mq_unlink("/msgq");
+        mq_unlink("/q");
         free(wBuffer);
         exit(0);
     }
