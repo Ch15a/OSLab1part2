@@ -11,7 +11,7 @@ int wordCount(char* msg, int bufsize) {
     int count = 0;
     for (int i = 0; i < bufsize; i++) {
         if (msg[i] == ' ' || msg[i] == '\n') {
-            msg++;
+            count++;
         }
     }
     return count;
