@@ -39,17 +39,17 @@ int main() {
         exit(0);
     }
     else {
-        FILE *file;
-        file = fopen("test.txt", "r");
-        if (file == NULL) {
-            fclose(file);
+        FILE *rfile;
+        rfile = fopen("test.txt", "r");
+        if (rfile == NULL) {
+            fclose(rfile);
             exit(1);
         }
         char* wBuffer = malloc(mqattr.mq_msgsize);
         char ch;
         int offset = 0;
         do {
-            ch = fgetc(file);
+            ch = fgetc(rfile);
             if (ch != EOF) {
                 wBuffer[offset++] = ch;;
                 if (offset == mqattr.mq_msgsize) {
@@ -63,10 +63,10 @@ int main() {
                 mq_send(msgq, wBuffer, mqattr.mq_msgsize, 0); 
             }
         } while (ch != EOF);
-        fclose(file);
+        fclose(rfile);
+        free(wBuffer);
         mq_close(msgq);
         mq_unlink("/queue");
-        free(wBuffer);
         exit(0);
     }
     return 0;
