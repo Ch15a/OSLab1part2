@@ -7,9 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int wordCount(char* msg, int bufLen) {
+int wordCount(char* msg, int bufsize) {
     int count = 0;
-    for (int i = 0; i < bufLen; i++) {
+    for (int i = 0; i < bufsize; i++) {
         if (msg[i] == ' ' || msg[i] == '\n') {
             msg++;
         }
