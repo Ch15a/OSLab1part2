@@ -18,7 +18,7 @@ int wordCount(char* msg, int bufLen) {
 }
 
 int main() {
-    mqd_t msgq = mq_open("/q", O_RDWR | O_CREAT);
+    mqd_t msgq = mq_open("/queue", O_RDWR | O_CREAT);
     struct mq_attr mqattr;
     if (mq_getattr(msgq, &mqattr) == -1) {
         exit(1);
@@ -28,14 +28,14 @@ int main() {
         exit(1);
     }
     else if (pid == 0) {
-        int numRead;
+        int rcount;
         char* rBuffer = malloc(mqattr.mq_msgsize);
-        numRead = mq_receive(msgq, rBuffer, mqattr.mq_msgsize, NULL);
-        printf("%d\n", wordCount(rBuffer, numRead));
+        rcount = mq_receive(msgq, rBuffer, mqattr.mq_msgsize, NULL);
+        printf("%d\n", wordCount(rBuffer, rcount));
         fflush(stdout);
         free(rBuffer);
         mq_close(msgq);
-        mq_unlink("/q");
+        mq_unlink("/queue");
         exit(0);
     }
     else {
@@ -53,19 +53,19 @@ int main() {
             if (ch != EOF) {
                 wBuffer[offset++] = ch;;
                 if (offset == mqattr.mq_msgsize) {
-                    mq_send(msgq, wBuffer, mqattr.mq_msgsize, 1);
+                    mq_send(msgq, wBuffer, mqattr.mq_msgsize, 0);
                 }
             }
             else {
                 for(int i = offset; i < mqattr.mq_msgsize; i++) {
                     wBuffer[i] = 0;;
                 }
-                mq_send(msgq, wBuffer, mqattr.mq_msgsize, 1); 
+                mq_send(msgq, wBuffer, mqattr.mq_msgsize, 0); 
             }
         } while (ch != EOF);
         fclose(file);
         mq_close(msgq);
-        mq_unlink("/q");
+        mq_unlink("/queue");
         free(wBuffer);
         exit(0);
     }
